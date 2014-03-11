@@ -5,9 +5,14 @@ set(VERSION_MAJOR 3)
 set(VERSION_MINOR 0)
 set(VERSION_PATCH 0)
 
+# definitions
+add_definitions("-W -Wall -Werror")
+add_definitions("-O1")
+add_definitions("-fno-exceptions")
+add_definitions("-fstack-protector -Wformat-security")
+
 add_library(libbrainfuck STATIC src/brainfuck.c)
 set_target_properties(libbrainfuck PROPERTIES PREFIX "")
 
 add_executable(brainfuck src/main.c)
 target_link_libraries(brainfuck libbrainfuck)
-
