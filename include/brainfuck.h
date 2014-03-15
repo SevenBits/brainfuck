@@ -31,14 +31,14 @@
 /*
  * This structure represents a script that is compiled by a compiler.
  */ 
-struct BrainfuckScript {
+typedef struct BrainfuckScript {
 
 } BrainfuckScript;
 
 /*
  * This structure represents an environment in which a script can be run.
  */
-struct BrainfuckEnvironment {
+typedef struct BrainfuckEnvironment {
 
 } BrainfuckEnvironment;
 
@@ -50,7 +50,7 @@ struct BrainfuckEnvironment {
 struct BrainfuckEnvironment * brainfuck_environment_default();
 
 /* 
- * Compile the given string using a Brainfuck compiler.
+ * Compile the given string using the default Brainfuck compiler.
  *
  * @param source The source string to compile.
  * @param success A pointer to an integer that will be set to either a 
