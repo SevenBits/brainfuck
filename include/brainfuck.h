@@ -49,9 +49,12 @@ struct BrainfuckEnvironment * brainfuck_environment_default();
  * Compile the given string using a Brainfuck compiler.
  *
  * @param source The source string to compile.
- * @return A pointer to a BrainfuckScript instance.
+ * @param success A pointer to an integer that will be set to either a 
+ * 	success or an error code.
+ * @return A pointer to a BrainfuckScript instance or <code>null</code> if
+ * 	the compiling failed.
  */
-struct BrainfuckScript * brainfuck_compile(char *source);
+struct BrainfuckScript * brainfuck_compile(char *source, int *success);
 
 /*
  * Run the given compiled script with the given environment.
