@@ -7,6 +7,7 @@ set(VERSION_PATCH 0)
 
 # definitions
 add_definitions("-W -Wall -Werror")
+add_definitions("-std=c89")
 add_definitions("-O1")
 add_definitions("-fno-exceptions")
 add_definitions("-fstack-protector -Wformat-security")

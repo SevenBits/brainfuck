@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  */
 
+#include <stdlib.h>
+
 #include "../include/brainfuck.h"
 
 /*                                                                              
