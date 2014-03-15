@@ -24,6 +24,10 @@
 #ifndef BRAINFUCK_H
 #define BRAINFUCK_H
 
+#define BRAINFUCK_OK 0 /* Everything is OK */
+#define BRAINFUCK_ENOMEM 1 /* Out of memory */
+#define BRAINFUCK_ESYNTAX 2 /* Syntax error */
+
 /*
  * This structure represents a script that is compiled by a compiler.
  */ 
