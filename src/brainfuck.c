@@ -22,17 +22,22 @@
  * THE SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "../include/brainfuck.h"
 
 /*                                                                              
- * Return the default environment.                                              
+ * Return a BrainfuckEnvironment with the input and output handlers connected
+ * 	to the standard input and output.                                            
  *                                                                              
  * @return The default environment.                                             
  */                                                                             
 struct BrainfuckEnvironment * brainfuck_environment_default() {
-	return NULL; /* TODO not implemented yet */
+	BrainfuckEnvironment *env = malloc(sizeof(BrainfuckEnvironment));
+	env->input_handler = &getchar;
+	env->output_handler = &putchar;
+	return env;
 }
 
 /*                                                                              
@@ -69,4 +74,5 @@ int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *e
  */                                                                             
 void brainfuck_free(void *structure) {
 	free(structure);
+	structure = 0;
 }

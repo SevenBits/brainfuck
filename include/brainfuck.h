@@ -25,8 +25,9 @@
 #define BRAINFUCK_H
 
 #define BRAINFUCK_OK 0 /* Everything is OK */
-#define BRAINFUCK_ENOMEM 1 /* Out of memory */
-#define BRAINFUCK_ESYNTAX 2 /* Syntax error */
+#define BRAINFUCK_EOF EOF /* End of file */
+#define BRAINFUCK_ENOMEM -5 /* Out of memory */
+#define BRAINFUCK_ESYNTAX -6 /* Syntax error */
 
 /*
  * This structure represents a script that is compiled by a compiler.
@@ -39,7 +40,21 @@ typedef struct BrainfuckScript {
  * This structure represents an environment in which a script can be run.
  */
 typedef struct BrainfuckEnvironment {
+	/*
+ 	 * Pointer to a function which can read from the environment's input.
+	 *
+	 * @return The character that was read from the environment's input.
+	 */
+	int (*input_handler)(void);
 
+	/*
+	 * Pointer to a function which can write to the environment's output.
+	 * 
+	 * @param character The character to write to the environment's output.
+	 * @return On success, the written character is returned. If a writing 
+	 * 	error occurs, BRAINFUCK_EOF is returned.
+	 */
+	int (*output_handler)(int character);
 } BrainfuckEnvironment;
 
 /*
