@@ -29,11 +29,69 @@
 #define BRAINFUCK_ENOMEM -5 /* Out of memory */
 #define BRAINFUCK_ESYNTAX -6 /* Syntax error */
 
+#define BRAINFUCK_INSTRUCTION_PLUS 1
+#define BRAINFUCK_INSTRUCTION_MINUS 2
+#define BRAINFUCK_INSTRUCTION_NEXT 3
+#define BRAINFUCK_INSTRUCTION_PREVIOUS 4
+#define BRAINFUCK_INSTRUCTION_OUTPUT 5
+#define BRAINFUCK_INSTRUCTION_INPUT 6
+#define BRAINFUCK_INSTRUCTION_LOOP 7
+
+/*
+ * This structure represents a single instruction.
+ */
+typedef struct BrainfuckInstruction {
+	/* 
+	 * The id of this instruction.
+	 */
+	int id;
+
+	/*
+	 * Contains the memory to execute.
+	 */
+	void *code;
+} BrainfuckInstruction;
+
+/*                                                                              
+ * This structure represents an instruction that mutates the index or the       
+ *      value of a memory cell.                                                 
+ */                                                                             
+typedef struct BrainfuckMutateInstruction {                                     
+	/*                                                                   
+	 * The base instruction.                                                
+	 */                                                                     
+	struct BrainfuckInstruction base;                                       
+                                                                    
+	/*                                                                      
+	 * The difference between the current value and the new value.          
+	 * To decrease the value, use a negative difference number.            
+	 */                                                                     
+        int difference;                                                         
+} BrainfuckMutateInstruction;   
+
+/*
+ * This structure represents a node of the linked list that contains all
+ *	instructions of a script.
+ */
+typedef struct BrainfuckScriptNode {
+	/*
+	 * Pointer to the instruction of this node.
+	 */
+	struct BrainfuckInstruction *instruction;
+	/*
+ 	 * The next node in the linked list.
+	 */
+	struct BrainfuckScriptNode *next;
+} BrainfuckScriptNode;
+
 /*
  * This structure represents a script that is compiled by a compiler.
  */ 
 typedef struct BrainfuckScript {
-
+	/*
+	 * Pointer to the first instruction of this script.
+	 */ 
+	struct BrainfuckScriptNode *root;
 } BrainfuckScript;
 
 /*

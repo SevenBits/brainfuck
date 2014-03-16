@@ -33,7 +33,8 @@
  *                                                                              
  * @return The default environment.                                             
  */                                                                             
-struct BrainfuckEnvironment * brainfuck_environment_default() {
+struct BrainfuckEnvironment * brainfuck_environment_default() 
+{
 	BrainfuckEnvironment *env = malloc(sizeof(BrainfuckEnvironment));
 	env->input_handler = &getchar;
 	env->output_handler = &putchar;
@@ -49,9 +50,68 @@ struct BrainfuckEnvironment * brainfuck_environment_default() {
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if      
  *      the compiling failed.                                                   
  */                                                                             
-struct BrainfuckScript * brainfuck_compile(char *source, int *success) {
+struct BrainfuckScript * brainfuck_compile(char *source, int *success) 
+{
+	BrainfuckScript *script = malloc(sizeof(BrainfuckScript));
+	BrainfuckScriptNode *node;
+	BrainfuckScriptNode *head;
+	BrainfuckInstruction *instruction;
+
+	int id = 0;
+	int difference = 0;
+	
+	while (*source) {
+		node = malloc(sizeof(BrainfuckScriptNode));
+
+		switch (*source++) {
+		case '+':
+		case '-':
+			difference = 0;
+
+			while (*source++ == '+' || *source == '-')
+				if (*source == '+')
+					difference++;
+				else
+					difference--;
+			
+			if (difference == 0)
+				continue;	
+			else
+				id = difference > 0 ? BRAINFUCK_INSTRUCTION_PLUS : BRAINFUCK_INSTRUCTION_MINUS;
+			instruction = (BrainfuckInstruction *) malloc(sizeof(BrainfuckMutateInstruction));
+			instruction->id = id;
+			((BrainfuckMutateInstruction *) instruction)->difference = difference;
+			break;
+		}
+		
+		case '>':
+		case '<':
+			difference = 0;
+
+			while (*source++ == '+' || *source == '-')
+				if (*source == '+')
+					difference++;
+				else
+					difference--;
+			
+			if (difference == 0)
+				continue;	
+			else
+				id = difference > 0 ? BRAINFUCK_INSTRUCTION_NEXT : BRAINFUCK_INSTRUCTION_PREVIOUS;
+			instruction = (BrainfuckInstruction *) malloc(sizeof(BrainfuckMutateInstruction));
+			instruction->id = id;
+			((BrainfuckMutateInstruction *) instruction)->difference = difference;
+			break;
+		}
+		
+		node->instruction = instruction;
+		if (script->root == NULL) 
+			script->root = node;
+		head->next = node;
+		head = node;
+	}
 	*success = BRAINFUCK_OK; 
-	return NULL; /* TODO not implemented yet */
+	return NULL;
 }
 
 /*                                                                              
@@ -63,7 +123,8 @@ struct BrainfuckScript * brainfuck_compile(char *source, int *success) {
  * @return a integer with a value of zero or higher if the script executed      
  *      successfully, a value lower than zero otherwise.                        
  */                                                                             
-int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *environment) {
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *environment) 
+{
 	return BRAINFUCK_OK;
 }
 
@@ -72,7 +133,8 @@ int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *e
  *                                                                              
  * @param structure The structure to deallocate from the memory.                
  */                                                                             
-void brainfuck_free(void *structure) {
+void brainfuck_free(void *structure) 
+{
 	free(structure);
 	structure = 0;
 }
