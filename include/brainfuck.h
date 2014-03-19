@@ -29,45 +29,9 @@
 #define BRAINFUCK_ENOMEM -5 /* Out of memory */
 #define BRAINFUCK_ESYNTAX -6 /* Syntax error */
 
-#define BRAINFUCK_INSTRUCTION_PLUS 1
-#define BRAINFUCK_INSTRUCTION_MINUS 2
-#define BRAINFUCK_INSTRUCTION_NEXT 3
-#define BRAINFUCK_INSTRUCTION_PREVIOUS 4
-#define BRAINFUCK_INSTRUCTION_OUTPUT 5
-#define BRAINFUCK_INSTRUCTION_INPUT 6
-#define BRAINFUCK_INSTRUCTION_LOOP 7
-
-/*
- * This structure represents a single instruction.
- */
-typedef struct BrainfuckInstruction {
-	/* 
-	 * The id of this instruction.
-	 */
-	int id;
-
-	/*
-	 * Contains the memory to execute.
-	 */
-	void *code;
-} BrainfuckInstruction;
-
-/*                                                                              
- * This structure represents an instruction that mutates the index or the       
- *      value of a memory cell.                                                 
- */                                                                             
-typedef struct BrainfuckMutateInstruction {                                     
-	/*                                                                   
-	 * The base instruction.                                                
-	 */                                                                     
-	struct BrainfuckInstruction base;                                       
-                                                                    
-	/*                                                                      
-	 * The difference between the current value and the new value.          
-	 * To decrease the value, use a negative difference number.            
-	 */                                                                     
-        int difference;                                                         
-} BrainfuckMutateInstruction;   
+#include "instruction.h"
+#include "environment.h"
+#include "pass.h" 
 
 /*
  * This structure represents a node of the linked list that contains all
@@ -95,54 +59,38 @@ typedef struct BrainfuckScript {
 } BrainfuckScript;
 
 /*
- * This structure represents an environment in which a script can be run.
+ * This structure is passed to the compiler and contains the pass manager.
+ * 	that the compiler must use when compiling.
  */
-typedef struct BrainfuckEnvironment {
-	/*
- 	 * Pointer to a function which can read from the environment's input.
-	 *
-	 * @return The character that was read from the environment's input.
+typedef struct BrainfuckCompilerContext {
+	/* 
+	 * The BrainfuckPassManager that the compiler should use.
 	 */
-	int (*input_handler)(void);
-
-	/*
-	 * Pointer to a function which can write to the environment's output.
-	 * 
-	 * @param character The character to write to the environment's output.
-	 * @return On success, the written character is returned. If a writing 
-	 * 	error occurs, BRAINFUCK_EOF is returned.
-	 */
-	int (*output_handler)(int character);
-} BrainfuckEnvironment;
-
-/*
- * Return the default environment.
- * 
- * @return The default environment.
- */
-struct BrainfuckEnvironment * brainfuck_environment_default();
+	struct BrainfuckPassManager *pass_manager;
+} BrainfuckCompilerContext;
 
 /* 
  * Compile the given string using the default Brainfuck compiler.
  *
- * @param source The source string to compile.
+ * @param ctx A BrainfuckCompilerContext structure.
  * @param error A pointer to an integer that will be set to either a 
  * 	success or error code.
+ * @param source The source string to compile.
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct BrainfuckScript * brainfuck_compile(char *source, int *error);
+struct BrainfuckScript * brainfuck_compile(struct BrainfuckCompilerContext *ctx, char *source, int *error);
 
 /*
  * Run the given compiled script with the given environment.
  *
  * @param script The script to run.
- * @param environment The environment to run this script in. If this argument
+ * @param env The environment to run this script in. If this argument
  *	is <code>null</code>, it will use the default environment.
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */
-int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *environment);
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *env);;
 
 /*
  * Deallocate the given Brainfuck structure from the memory.
