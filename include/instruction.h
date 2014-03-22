@@ -21,45 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef BRAINFUCK_INSTRUCTION_H
-#define BRAINFUCK_INSTRUCTION_H
+#ifndef LIBBRAINFUCK_INSTRUCTION_H
+#define LIBBRAINFUCK_INSTRUCTION_H
 
-#define BRAINFUCK_INSTRUCTION_CELL 1 /* Cell value mutation */
-#define BRAINFUCK_INSTRUCTION_INDEX 2 /* Index mutation */
-#define BRAINFUCK_INSTRUCTION_OUTPUT 3
-#define BRAINFUCK_INSTRUCTION_INPUT 4
-#define BRAINFUCK_INSTRUCTION_LOOP 5
+#define LIBBRAINFUCK_INSTRUCTION_CELL 1 /* Cell value mutation */
+#define LIBBRAINFUCK_INSTRUCTION_INDEX 2 /* Index mutation */
+#define LIBBRAINFUCK_INSTRUCTION_OUTPUT 3
+#define LIBBRAINFUCK_INSTRUCTION_INPUT 4
+#define LIBBRAINFUCK_INSTRUCTION_LOOP 5
 
 /*
  * This structure represents a single instruction.
  */
-typedef struct BrainfuckInstruction {
+struct libbrainfuck_Instruction {
 	/* 
 	 * The id of this instruction.
 	 */
 	int id;
 
 	/*
+	 * The code of this instruction.
+	 */
+	char *code;
+
+	/*
 	 * Contains the memory to execute.
 	 */
-	void *code;
-} BrainfuckInstruction;
+	void *memory;
+} libbrainfuck_Instruction;
 
 /*                                                                              
  * This structure represents an instruction that mutates the index or the       
  *      value of a memory cell.                                                 
  */                                                                             
-typedef struct BrainfuckMutateInstruction {                                     
+struct libbrainfuck_MutateInstruction {                                     
 	/*                                                                   
 	 * The base instruction.                                                
 	 */                                                                     
-	struct BrainfuckInstruction base;                                       
+	struct libbrainfuck_Instruction base;                                       
                                                                     
 	/*                                                                      
 	 * The difference between the current value and the new value.          
 	 * To decrease the value, use a negative difference number.            
 	 */                                                                     
         int difference;                                                         
-} BrainfuckMutateInstruction;  
+} libbrainfuck_MutateInstruction;  
 
 #endif

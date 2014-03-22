@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef BRAINFUCK_BASE_H
-#define BRAINFUCK_BASE_H
+#ifndef LIBBRAINFUCK_BASE_H
+#define LIBBRAINFUCK_BASE_H
 
-#define BRAINFUCK_OK 0 /* Everything is OK */
-#define BRAINFUCK_EOF EOF /* End of file */
-#define BRAINFUCK_ENOMEM -5 /* Out of memory */
-#define BRAINFUCK_ESYNTAX -6 /* Syntax error */
+#define LIBBRAINFUCK_OK 0 /* Everything is OK */
+#define LIBBRAINFUCK_EOF EOF /* End of file */
+#define LIBBRAINFUCK_ENOMEM -5 /* Out of memory */
+#define LIBBRAINFUCK_ESYNTAX -6 /* Syntax error */
 
 #include "instruction.h"
 #include "environment.h"
@@ -37,54 +37,83 @@
  * This structure represents a node of the linked list that contains all
  *	instructions of a script.
  */
-typedef struct BrainfuckScriptNode {
+struct libbrainfuck_ScriptNode {
 	/*
 	 * Pointer to the instruction of this node.
 	 */
-	struct BrainfuckInstruction *instruction;
+	struct libbrainfuck_Instruction *instruction;
 	/*
  	 * The next node in the linked list.
 	 */
-	struct BrainfuckScriptNode *next;
-} BrainfuckScriptNode;
+	struct libbrainfuck_ScriptNode *next;
+} libbrainfuck_ScriptNode;
 
 /*
  * This structure represents a script that is compiled by a compiler.
  */ 
-typedef struct BrainfuckScript {
+struct libbrainfuck_Script {
 	/*
 	 * Pointer to the first instruction of this script.
 	 */ 
-	struct BrainfuckScriptNode *root;
-} BrainfuckScript;
+	struct libbrainfuck_ScriptNode *root;
+} libbrainfuck_Script;
 
 /*
  * This structure is passed to the compiler and contains the pass manager.
  * 	that the compiler must use when compiling.
  */
-typedef struct BrainfuckCompilerContext {
+struct libbrainfuck_CompilerContext {
 	/* 
-	 * The BrainfuckPassManager that the compiler should use.
+	 * The PassManager that the compiler should use.
 	 */
-	struct BrainfuckPassManager *pass_manager;
-} BrainfuckCompilerContext;
+	struct libbrainfuck_PassManager *pass_manager;
+} libbrainfuck_CompilerContext;
 
 /*
- * Run the given compiled script with the given environment.
+ * This structure is contains the current index and the location of the memory cells.
+ */
+struct libbrainfuck_ExecutionContext {
+	/*
+	 * The current index in the memory.
+	 */
+	int index;
+
+	/*
+	 * Location of the memory.
+	 */
+	int *memory;
+
+	/*
+	 * Environment to execute the script in.
+	 */
+	struct libbrainfuck_Environment *env;
+} libbrainfuck_ExecutionContext;
+
+/*
+ * Returns the default execution context.
+ *
+ * @param size Size of the memory.
+ * @return The default execution context.
+ */
+struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(int size);
+
+/*
+ * Run the given compiled script with the given context.
  *
  * @param script The script to run.
- * @param env The environment to run this script in. If this argument
- *	is <code>null</code>, it will use the default environment.
+ * @param ctx The execution context that will provide the memory management and
+ *	the environment for the execution. If <code>NULL</code> is given, it will
+ *	use the default context.
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */
-int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckEnvironment *env);;
+int libbrainfuck_run(struct libbrainfuck_Script *script, struct libbrainfuck_ExecutionContext *ctx);
 
 /*
  * Deallocate the given Brainfuck structure from the memory.
  *
  * @param structure The structure to deallocate from the memory.
  */
-void brainfuck_free(void *structure);
+void libbrainfuck_free(void *structure);
 
 #endif

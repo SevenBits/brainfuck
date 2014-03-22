@@ -21,43 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef BRAINFUCK_PASS_H
-#define BRAINFUCK_PASS_H
+#ifndef LIBBRAINFUCK_PASS_H
+#define LIBBRAINFUCK_PASS_H
 
 /*
  * This structure represents a pass which can transform or analyse code.
  */
-typedef struct BrainfuckPass {
-} BrainfuckPass;
+struct libbrainfuck_Pass {
+	/*
+	 * Analyse the given instruction.
+	 *
+	 * @param instruction The instruction to analyse.
+	 */
+	void (*analyse)(struct libbrainfuck_Instruction *instruction);
+
+	/*
+	 * Transforms the given instruction.
+	 *
+	 * @param instruction The instruction to transform.
+	 * @return The transformed instruction.
+	 */
+	struct libbrainfuck_Instruction * (*transform)(struct libbrainfuck_Instruction *instruction);
+} libbrainfuck_Pass;
 
 /*
  * This structure represents a node in a linked list of a pass manager.
  */
-typedef struct BrainfuckPassManagerNode {
+struct libbrainfuck_PassManagerNode {
 	/* 
-	 * The BrainfuckPass that is associated with this node.
+	 * The Pass that is associated with this node.
 	 */
-	struct BrainfuckPass pass;
+	struct libbrainfuck_Pass pass;
 
 	/*
  	 * The next node.
 	 */
-	struct BrainfuckPassManagerNode *next;
-} BrainfuckPassManagerNode;
+	struct libbrainfuck_PassManagerNode *next;
+} libbrainfuck_PassManagerNode;
 
 /*
  * This structure manages passes.
  */
-typedef struct BrainfuckPassManager {
+struct libbrainfuck_PassManager {
 	/*
-	 * The first transform node.
+	 * The first node.
 	 */
-	struct BrainfuckPassManagerNode *root_transform;
-
-	/*
- 	 * The first analysis pass.
-	 */
-	struct BrainfuckPassManagerNode *root_analysis;
-} BrainfuckPassManager;
+	struct libbrainfuck_PassManagerNode *root;
+} libbrainfuck_PassManager;
 
 #endif
