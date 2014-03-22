@@ -64,7 +64,23 @@ struct libbrainfuck_MutateInstruction {
 	 * The difference between the current value and the new value.          
 	 * To decrease the value, use a negative difference number.            
 	 */                                                                     
-        int difference;                                                         
+	int difference;                                                         
 } libbrainfuck_MutateInstruction;  
+
+/*
+ * Creates a memory cell mutation instruction.
+ *
+ * @param difference The value to add to the current memory cell value.
+ * @return The created instruction as a MutateInstruction.
+ */
+struct libbrainfuck_Instruction * libbrainfuck_create_cell_mutate_instruction(int difference);
+
+/*
+ * Creates a memory index mutation instruction.
+ *
+ * @param difference The value to add to the current memory cell value.
+ * @return The created instruction as a MutateInstruction.
+ */
+struct libbrainfuck_Instruction * libbrainfuck_create_index_mutate_instruction(int difference);
 
 #endif

@@ -51,7 +51,7 @@ struct libbrainfuck_PassManagerNode {
 	/* 
 	 * The Pass that is associated with this node.
 	 */
-	struct libbrainfuck_Pass pass;
+	struct libbrainfuck_Pass *pass;
 
 	/*
  	 * The next node.
