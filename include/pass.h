@@ -24,6 +24,8 @@
 #ifndef LIBBRAINFUCK_PASS_H
 #define LIBBRAINFUCK_PASS_H
 
+#include "instruction.h"
+
 /*
  * This structure represents a pass which can transform or analyse code.
  */

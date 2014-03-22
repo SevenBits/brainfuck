@@ -26,8 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/types.h>
-#include <sys/mman.h>
+#ifndef NO_JIT
+#	include <sys/types.h>
+#	include <sys/mman.h>
+#endif
 
 #include "../include/brainfuck.h"
 
@@ -45,6 +47,7 @@ struct libbrainfuck_Environment * libbrainfuck_default_environment()
 	return env;
 }
 
+#ifndef NO_JIT
 /*
  * Creates a memory cell mutation instruction.
  *
@@ -92,7 +95,49 @@ struct libbrainfuck_Instruction * libbrainfuck_create_index_mutate_instruction(i
    
 	return instruction;
 }
+#else
 
+/*
+ * Handles cell mutation if JIT is disabled.
+ *
+ * @param instruction The instruction to handle.
+ * @param ctx The execution context to use.
+ * @return The result. If lower than zero, it failed.
+ */
+int libbrainfuck_handle_cell_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+{
+	ctx->memory[ctx->index] = ((struct libbrainfuck_MutateInstruction *) instruction)->difference;
+	return 0;
+}
+
+/*
+ * Handles index mutation if JIT is disabled.
+ *
+ * @param instruction The instruction to handle.
+ * @param ctx The execution context to use.
+ * @return The result. If lower than zero, it failed.
+ */
+int libbrainfuck_handle_index_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+{
+	ctx->index += ((struct libbrainfuck_MutateInstruction *) instruction)->difference;
+	return 0;
+}
+
+/*
+ * Handles output if JIT is disabled.
+ *
+ * @param instruction The instruction to handle.
+ * @param ctx The execution context to use.
+ * @return The result. If lower than zero, it failed.
+ */
+int libbrainfuck_handle_output_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+{
+	(void)(instruction);
+	ctx->env->output_handler(ctx->memory[ctx->index]);
+	return 0;
+}
+
+#endif 
 
 /*
  * Returns the default execution context.
@@ -121,12 +166,22 @@ struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(in
  */                                                                         
 int libbrainfuck_run(struct libbrainfuck_Script *script, struct libbrainfuck_ExecutionContext *ctx)
 {
+	if (ctx == NULL)
+		ctx = libbrainfuck_default_execution_context(LIBBRAINFUCK_DEFAULT_MEMORY_SIZE);
+	
 	struct libbrainfuck_ScriptNode *node = script->root;
 	while (node) {
+#ifndef NO_JIT
 		int (*func)(struct libbrainfuck_ExecutionContext *ctx)  = node->instruction->memory;
 		if (func == NULL)
 			continue;
 		int result = func(ctx);
+#else
+		int (*func)(struct libbrainfuck_Instruction *, struct libbrainfuck_ExecutionContext *ctx)  = node->instruction->memory;
+		if (func == NULL)
+			continue;
+		int result = func(node->instruction, ctx);
+#endif
 		if (result < LIBBRAINFUCK_OK)
 			return result;
 		node = node->next;
@@ -162,47 +217,81 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 	struct libbrainfuck_ScriptNode *head;
 	struct libbrainfuck_Instruction *instruction;
 
-	struct libbrainfuck_PassManagerNode *pass_node = ctx->pass_manager->root;
+	struct libbrainfuck_PassManagerNode *pass_node;
+	
+	if (ctx != NULL)
+		pass_node = ctx->pass_manager->root;
 
 	int difference = 0;
 	
 	while (*source) {
 		node = malloc(sizeof(struct libbrainfuck_ScriptNode));
-
+		
 		switch (*source++) {
 			case '+':
 			case '-':
-			difference = 0;
+				difference = 0;
 
-			while (*source++ == '+' || *source == '-')
-				if (*source == '+')
-					difference++;
-			else
-				difference--;
-			
-			if (difference == 0)
-				continue;	
-			instruction = libbrainfuck_create_cell_mutate_instruction(difference);
-			break;
+				while (*source++ == '+' || *source == '-')
+					if (*source == '+')
+						difference++;
+				else
+					difference--;
+				source--;
+				if (difference == 0)
+					continue;	
+#ifndef NO_JIT
+				instruction = libbrainfuck_create_cell_mutate_instruction(difference);
+#else
+				instruction = (struct libbrainfuck_Instruction *) malloc(sizeof(struct libbrainfuck_MutateInstruction));
+				instruction->id = LIBBRAINFUCK_INSTRUCTION_CELL;
+				instruction->memory = &libbrainfuck_handle_cell_mutate_instruction;
+		
+				((struct libbrainfuck_MutateInstruction *) instruction)->difference = difference;
+#endif
+				break;
 			case '>':
 			case '<':
-			difference = 0;
+				difference = 0;
 
-			while (*source++ == '+' || *source == '-')
-				if (*source == '+')
-					difference++;
-			else
-				difference--;
+				while (*source++ == '+' || *source == '-')
+					if (*source == '+')
+						difference++;
+				else
+					difference--;
+				source--;
 			
-			if (difference == 0)
-				continue;	
-			instruction = libbrainfuck_create_index_mutate_instruction(difference);
-			break;
+				if (difference == 0)
+					continue;	
+#ifndef NO_JIT
+				instruction = libbrainfuck_create_index_mutate_instruction(difference);
+#else
+				instruction = (struct libbrainfuck_Instruction *) malloc(sizeof(struct libbrainfuck_MutateInstruction));
+				instruction->id = LIBBRAINFUCK_INSTRUCTION_INDEX;
+				instruction->memory = &libbrainfuck_handle_index_mutate_instruction;
+		
+				((struct libbrainfuck_MutateInstruction *) instruction)->difference = difference;
+#endif
+				break;
 
 			case '.':
-			instruction = malloc(sizeof(struct libbrainfuck_Instruction));
-			instruction->id = LIBBRAINFUCK_INSTRUCTION_OUTPUT;
-			break;
+#ifndef NO_JIT
+			
+#else
+				instruction = malloc(sizeof(struct libbrainfuck_Instruction));
+				instruction->id = LIBBRAINFUCK_INSTRUCTION_OUTPUT;
+				instruction->memory = &libbrainfuck_handle_output_instruction;
+#endif
+				break;
+			case '.':
+#ifndef NO_JIT
+			
+#else
+				instruction = malloc(sizeof(struct libbrainfuck_Instruction));
+				instruction->id = LIBBRAINFUCK_INSTRUCTION_INPUT;
+				instruction->memory = &libbrainfuck_handle_input_instruction;
+#endif
+				break;
 		}
 		
 		while (pass_node) {
@@ -214,15 +303,18 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 				instruction = pass_node->pass->transform(instruction);
 			pass_node = pass_node->next;
 		}
-		pass_node = ctx->pass_manager->root;
+		if (ctx != NULL)
+			pass_node = ctx->pass_manager->root;
 		if (instruction == NULL)
 			continue;
 		node->instruction = instruction;
 		if (script->root == NULL) 
 			script->root = node;
-		head->next = node;
+		if (head != NULL)
+			head->next = node;
 		head = node;
 	}
-	*error = LIBBRAINFUCK_OK; 
+	if (error != NULL)
+		*error = LIBBRAINFUCK_OK; 
 	return script;
 }

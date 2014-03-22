@@ -67,6 +67,8 @@ struct libbrainfuck_MutateInstruction {
 	int difference;                                                         
 } libbrainfuck_MutateInstruction;  
 
+#ifndef NO_JIT
+
 /*
  * Creates a memory cell mutation instruction.
  *
@@ -83,4 +85,5 @@ struct libbrainfuck_Instruction * libbrainfuck_create_cell_mutate_instruction(in
  */
 struct libbrainfuck_Instruction * libbrainfuck_create_index_mutate_instruction(int difference);
 
+#endif
 #endif

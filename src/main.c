@@ -21,6 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "../include/brainfuck.h"
+
 int main(void)
 {
+	struct libbrainfuck_Script *script = libbrainfuck_brainfuck_compile(NULL, "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.", NULL);
+	libbrainfuck_run(script, NULL);
+	libbrainfuck_free(script);
+	return 0;
 }

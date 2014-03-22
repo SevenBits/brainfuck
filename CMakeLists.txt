@@ -11,6 +11,7 @@ add_definitions("-std=c89")
 add_definitions("-O1")
 add_definitions("-fno-exceptions")
 add_definitions("-fstack-protector -Wformat-security")
+add_definitions("-DNO_JIT -g")
 
 add_library(libbrainfuck STATIC src/brainfuck.c)
 set_target_properties(libbrainfuck PROPERTIES PREFIX "")
