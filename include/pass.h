@@ -28,7 +28,6 @@
  * This structure represents a pass which can transform or analyse code.
  */
 typedef struct BrainfuckPass {
-
 } BrainfuckPass;
 
 /*

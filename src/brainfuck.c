@@ -27,11 +27,6 @@
 
 #include "../include/brainfuck.h"
 
-/* 
- * Base implementation of the Brainfuck project. 
- * The compiler is not implemented.
- */
-
 /*                                                                              
  * Return a BrainfuckEnvironment with the input and output handlers connected
  * 	to the standard input and output.                                            
