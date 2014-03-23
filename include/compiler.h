@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef LIBBRAINFUCK_COMPILER_H
-#define LIBBRAINFUCK_COMPILER_H
+
+#ifndef BRAINFUCK_COMPILER_H
+#define BRAINFUCK_COMPILER_H
 
 #include "instruction.h"
 #include "pass.h"
@@ -31,37 +32,36 @@
  * This structure represents a node of the linked list that contains all
  *	instructions of a script.
  */
-struct libbrainfuck_ScriptNode {
+struct BrainfuckScriptNode {
 	/*
 	 * Pointer to the instruction of this node.
 	 */
-	struct libbrainfuck_Instruction *instruction;
+	struct BrainfuckInstruction *instruction;
 	/*
  	 * The next node in the linked list.
 	 */
-	struct libbrainfuck_ScriptNode *next;
-} libbrainfuck_ScriptNode;
+	struct BrainfuckScriptNode *next;
+} BrainfuckScriptNode;
 
 /*
  * This structure represents a script that is compiled by a compiler.
  */ 
-struct libbrainfuck_Script {
+struct BrainfuckScript {
 	/*
 	 * Pointer to the first instruction of this script.
 	 */ 
-	struct libbrainfuck_ScriptNode *root;
-} libbrainfuck_Script;
+	struct BrainfuckScriptNode *root;
+} BrainfuckScript;
 
 /*
  * This structure is passed to the compiler and contains the pass manager.
  * 	that the compiler must use when compiling.
  */
-struct libbrainfuck_CompilerContext {
+struct BrainfuckCompilerContext {
 	/* 
 	 * The PassManager that the compiler should use.
 	 */
-	struct libbrainfuck_PassManager *pass_manager;
-} libbrainfuck_CompilerContext;
-
+	struct BrainfuckPassManager *pass_manager;
+} BrainfuckCompilerContext;
 
 #endif

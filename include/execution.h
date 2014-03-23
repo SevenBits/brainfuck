@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef LIBBRAINFUCK_EXECUTION_H
-#define LIBBRAINFUCK_EXECUTION_H
+
+#ifndef BRAINFUCK_EXECUTION_H
+#define BRAINFUCK_EXECUTION_H
 
 #include "environment.h"
 #include "compiler.h"
@@ -30,7 +31,7 @@
 /*
  * This structure is contains the current index and the location of the memory cells.
  */
-struct libbrainfuck_ExecutionContext {
+struct BrainfuckExecutionContext {
 	/*
 	 * The current index in the memory.
 	 */
@@ -44,8 +45,8 @@ struct libbrainfuck_ExecutionContext {
 	/*
 	 * Environment to execute the script in.
 	 */
-	struct libbrainfuck_Environment *env;
-} libbrainfuck_ExecutionContext;
+	struct BrainfuckEnvironment *env;
+} BrainfuckExecutionContext;
 
 /*
  * Returns the default execution context.
@@ -53,7 +54,7 @@ struct libbrainfuck_ExecutionContext {
  * @param size Size of the memory.
  * @return The default execution context.
  */
-struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(int size);
+struct BrainfuckExecutionContext * brainfuck_default_execution_context(int size);
 
 /*
  * Run the given compiled script with the given context.
@@ -65,6 +66,6 @@ struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(in
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */
-int libbrainfuck_run(struct libbrainfuck_Script *script, struct libbrainfuck_ExecutionContext *ctx);
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx);
 
 #endif

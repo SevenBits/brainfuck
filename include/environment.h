@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef LIBBRAINFUCK_ENVIRONMENT_H
-#define LIBBRAINFUCK_ENVIRONMENT_H
+
+#ifndef BRAINFUCK_ENVIRONMENT_H
+#define BRAINFUCK_ENVIRONMENT_H
 
 /*
  * This structure represents an environment in which a script can be run.
  */
-struct libbrainfuck_Environment {
+struct BrainfuckEnvironment {
 	/*
  	 * Pointer to a function which can read from the environment's input.
 	 *
@@ -43,13 +44,13 @@ struct libbrainfuck_Environment {
 	 * 	error occurs, BRAINFUCK_EOF is returned.
 	 */
 	int (*output_handler)(int character);
-} libbrainfuck_Environment;
+} BrainfuckEnvironment;
 
 /*
  * Return the default environment.
  * 
  * @return The default environment.
  */
-struct libbrainfuck_Environment * libbrainfuck_default_environment();
+struct BrainfuckEnvironment * brainfuck_default_environment();
 
 #endif

@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef LIBBRAINFUCK_BASE_H
-#define LIBBRAINFUCK_BASE_H
+#ifndef BRAINFUCK_BASE_H
+#define BRAINFUCK_BASE_H
 
-#define LIBBRAINFUCK_DEFAULT_MEMORY_SIZE 30000
+#define BRAINFUCK_DEFAULT_MEMORY_SIZE 30000
 
-#define LIBBRAINFUCK_OK 0 /* Everything is OK */
-#define LIBBRAINFUCK_EOF EOF /* End of file */
-#define LIBBRAINFUCK_ENOMEM -5 /* Out of memory */
-#define LIBBRAINFUCK_ESYNTAX -6 /* Syntax error */
+#define BRAINFUCK_OK 0 /* Everything is OK */
+#define BRAINFUCK_EOF EOF /* End of file */
+#define BRAINFUCK_ENOMEM -5 /* Out of memory */
+#define BRAINFUCK_ESYNTAX -6 /* Syntax error */
 
 #include "instruction.h"
 #include "environment.h"
@@ -42,6 +42,6 @@
  *
  * @param structure The structure to deallocate from the memory.
  */
-void libbrainfuck_free(void *structure);
+void brainfuck_free(void *structure);
 
 #endif

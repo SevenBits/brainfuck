@@ -6,21 +6,21 @@
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*/
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,9 +39,9 @@
  *                                                                              
  * @return The default environment.                                             
  */                                                                             
-struct libbrainfuck_Environment * libbrainfuck_default_environment() 
+struct BrainfuckEnvironment * brainfuck_default_environment() 
 {
-	struct libbrainfuck_Environment *env = malloc(sizeof(struct libbrainfuck_Environment));
+	struct BrainfuckEnvironment *env = malloc(sizeof(struct BrainfuckEnvironment));
 	env->input_handler = &getchar;
 	env->output_handler = &putchar;
 	return env;
@@ -54,17 +54,17 @@ struct libbrainfuck_Environment * libbrainfuck_default_environment()
  * @param difference The value to add to the current memory cell value.
  * @return The created instruction as a MutateInstruction.
  */
-struct libbrainfuck_Instruction * libbrainfuck_create_cell_mutate_instruction(int difference) 
+struct BrainfuckInstruction * brainfuck_create_cell_mutation(int difference) 
 {
 	unsigned char code[] = {
         
 	};
     
-	struct libbrainfuck_MutateInstruction *mutate_instruction = malloc(sizeof(struct libbrainfuck_MutateInstruction));
+	struct BrainfuckMutateInstruction *mutate_instruction = malloc(sizeof(struct BrainfuckMutateInstruction));
 	mutate_instruction->difference = difference;
 	
-	struct libbrainfuck_Instruction *instruction = (struct libbrainfuck_Instruction *) mutate_instruction;
-	instruction->id = LIBBRAINFUCK_INSTRUCTION_CELL;
+	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) mutate_instruction;
+	instruction->id = BRAINFUCK_INSTRUCTION_CELL;
 	instruction->memory = malloc(sizeof(code));
 	memcpy(instruction->memory, code, sizeof(code));
 	mprotect(instruction->memory, sizeof(code), PROT_EXEC);
@@ -78,17 +78,17 @@ struct libbrainfuck_Instruction * libbrainfuck_create_cell_mutate_instruction(in
  * @param difference The value to add to the current memory index.
  * @return The created instruction as a MutateInstruction.
  */
-struct libbrainfuck_Instruction * libbrainfuck_create_index_mutate_instruction(int difference) 
+struct BrainfuckInstruction * brainfuck_create_index_mutation(int difference) 
 {
 	unsigned char code[] = {
         
 	};
     
-	struct libbrainfuck_MutateInstruction *mutate_instruction = malloc(sizeof(struct libbrainfuck_MutateInstruction));
+	struct BrainfuckMutateInstruction *mutate_instruction = malloc(sizeof(struct BrainfuckMutateInstruction));
 	mutate_instruction->difference = difference;
 	
-	struct libbrainfuck_Instruction *instruction = (struct libbrainfuck_Instruction *) mutate_instruction;
-	instruction->id = LIBBRAINFUCK_INSTRUCTION_INDEX;
+	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) mutate_instruction;
+	instruction->id = BRAINFUCK_INSTRUCTION_INDEX;
 	instruction->memory = malloc(sizeof(code));
 	memcpy(instruction->memory, code, sizeof(code));
 	mprotect(instruction->memory, sizeof(code), PROT_EXEC);
@@ -104,9 +104,9 @@ struct libbrainfuck_Instruction * libbrainfuck_create_index_mutate_instruction(i
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_cell_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+int brainfuck_handle_cell_mutation(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx)
 {
-	ctx->memory[ctx->index] = ((struct libbrainfuck_MutateInstruction *) instruction)->difference;
+	ctx->memory[ctx->index] = ((struct BrainfuckMutateInstruction *) instruction)->difference;
 	return 0;
 }
 
@@ -117,9 +117,9 @@ int libbrainfuck_handle_cell_mutate_instruction(struct libbrainfuck_Instruction 
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_index_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+int brainfuck_handle_index_mutation(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx)
 {
-	ctx->index += ((struct libbrainfuck_MutateInstruction *) instruction)->difference;
+	ctx->index += ((struct BrainfuckMutateInstruction *) instruction)->difference;
 	return 0;
 }
 
@@ -130,9 +130,9 @@ int libbrainfuck_handle_index_mutate_instruction(struct libbrainfuck_Instruction
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_output_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx)
+int brainfuck_handle_output(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx)
 {
-	(void)(instruction);
+	(void)(instruction); /* compiler will throw unused parameter error otherwise */
 	ctx->env->output_handler(ctx->memory[ctx->index]);
 	return 0;
 }
@@ -145,12 +145,12 @@ int libbrainfuck_handle_output_instruction(struct libbrainfuck_Instruction *inst
  * @param size Size of the memory.
  * @return The default execution context.
  */
-struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(int size)
+struct BrainfuckExecutionContext * brainfuck_default_execution_context(int size)
 {
-	struct libbrainfuck_ExecutionContext *ctx = malloc(sizeof(struct libbrainfuck_ExecutionContext));
+	struct BrainfuckExecutionContext *ctx = malloc(sizeof(struct BrainfuckExecutionContext));
 	ctx->index = 0;
 	ctx->memory = malloc(sizeof(int) * size);
-	ctx->env = libbrainfuck_default_environment();
+	ctx->env = brainfuck_default_environment();
 	return ctx;
 }
 
@@ -164,29 +164,27 @@ struct libbrainfuck_ExecutionContext * libbrainfuck_default_execution_context(in
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */                                                                         
-int libbrainfuck_run(struct libbrainfuck_Script *script, struct libbrainfuck_ExecutionContext *ctx)
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx)
 {
 	if (ctx == NULL)
-		ctx = libbrainfuck_default_execution_context(LIBBRAINFUCK_DEFAULT_MEMORY_SIZE);
+		ctx = brainfuck_default_execution_context(BRAINFUCK_DEFAULT_MEMORY_SIZE);
 	
-	struct libbrainfuck_ScriptNode *node = script->root;
+	struct BrainfuckScriptNode *node = script->root;
 	while (node) {
-#ifndef NO_JIT
-		int (*func)(struct libbrainfuck_ExecutionContext *ctx)  = node->instruction->memory;
-		if (func == NULL)
+		if (node->instruction->memory == NULL)
 			continue;
+#ifndef NO_JIT
+		int (*func)(struct BrainfuckExecutionContext *ctx)  = node->instruction->memory;
 		int result = func(ctx);
 #else
-		int (*func)(struct libbrainfuck_Instruction *, struct libbrainfuck_ExecutionContext *ctx)  = node->instruction->memory;
-		if (func == NULL)
-			continue;
+		int (*func)(struct BrainfuckInstruction *, struct BrainfuckExecutionContext *ctx)  = node->instruction->memory;
 		int result = func(node->instruction, ctx);
 #endif
-		if (result < LIBBRAINFUCK_OK)
+		if (result < BRAINFUCK_OK)
 			return result;
 		node = node->next;
 	}
-	return LIBBRAINFUCK_OK;
+	return BRAINFUCK_OK;
 }
 
 /*                                                                              
@@ -194,7 +192,7 @@ int libbrainfuck_run(struct libbrainfuck_Script *script, struct libbrainfuck_Exe
  *                                                                              
  * @param structure The structure to deallocate from the memory.                
  */                                                                             
-void libbrainfuck_free(void *structure) 
+void brainfuck_free(void *structure) 
 {
 	free(structure);
 	structure = 0;
@@ -210,14 +208,14 @@ void libbrainfuck_free(void *structure)
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_CompilerContext *ctx, char *source, int *error)
+struct BrainfuckScript * brainfuck_compile(struct BrainfuckCompilerContext *ctx, char *source, int *error)
 {
-	struct libbrainfuck_Script *script = malloc(sizeof(struct libbrainfuck_Script));
-	struct libbrainfuck_ScriptNode *node;
-	struct libbrainfuck_ScriptNode *head;
-	struct libbrainfuck_Instruction *instruction;
+	struct BrainfuckScript *script = malloc(sizeof(struct BrainfuckScript));
+	struct BrainfuckScriptNode *node;
+	struct BrainfuckScriptNode *head;
+	struct BrainfuckInstruction *instruction;
 
-	struct libbrainfuck_PassManagerNode *pass_node;
+	struct BrainfuckPassManagerNode *pass_node;
 	
 	if (ctx != NULL)
 		pass_node = ctx->pass_manager->root;
@@ -225,7 +223,7 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 	int difference = 0;
 	
 	while (*source) {
-		node = malloc(sizeof(struct libbrainfuck_ScriptNode));
+		node = malloc(sizeof(struct BrainfuckScriptNode));
 		
 		switch (*source++) {
 			case '+':
@@ -241,13 +239,13 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 				if (difference == 0)
 					continue;	
 #ifndef NO_JIT
-				instruction = libbrainfuck_create_cell_mutate_instruction(difference);
+				instruction = brainfuck_create_cell_mutation(difference);
 #else
-				instruction = (struct libbrainfuck_Instruction *) malloc(sizeof(struct libbrainfuck_MutateInstruction));
-				instruction->id = LIBBRAINFUCK_INSTRUCTION_CELL;
-				instruction->memory = &libbrainfuck_handle_cell_mutate_instruction;
+				instruction = (struct BrainfuckInstruction *) malloc(sizeof(struct BrainfuckMutateInstruction));
+				instruction->id = BRAINFUCK_INSTRUCTION_CELL;
+				instruction->memory = &brainfuck_handle_cell_mutation;
 		
-				((struct libbrainfuck_MutateInstruction *) instruction)->difference = difference;
+				((struct BrainfuckMutateInstruction *) instruction)->difference = difference;
 #endif
 				break;
 			case '>':
@@ -264,13 +262,13 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 				if (difference == 0)
 					continue;	
 #ifndef NO_JIT
-				instruction = libbrainfuck_create_index_mutate_instruction(difference);
+				instruction = brainfuck_create_index_mutation(difference);
 #else
-				instruction = (struct libbrainfuck_Instruction *) malloc(sizeof(struct libbrainfuck_MutateInstruction));
-				instruction->id = LIBBRAINFUCK_INSTRUCTION_INDEX;
-				instruction->memory = &libbrainfuck_handle_index_mutate_instruction;
+				instruction = (struct BrainfuckInstruction *) malloc(sizeof(struct BrainfuckMutateInstruction));
+				instruction->id = BRAINFUCK_INSTRUCTION_INDEX;
+				instruction->memory = &brainfuck_handle_index_mutation;
 		
-				((struct libbrainfuck_MutateInstruction *) instruction)->difference = difference;
+				((struct BrainfuckMutateInstruction *) instruction)->difference = difference;
 #endif
 				break;
 
@@ -278,18 +276,18 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 #ifndef NO_JIT
 			
 #else
-				instruction = malloc(sizeof(struct libbrainfuck_Instruction));
-				instruction->id = LIBBRAINFUCK_INSTRUCTION_OUTPUT;
-				instruction->memory = &libbrainfuck_handle_output_instruction;
+				instruction = malloc(sizeof(struct BrainfuckInstruction));
+				instruction->id = BRAINFUCK_INSTRUCTION_OUTPUT;
+				instruction->memory = &brainfuck_handle_output;
 #endif
 				break;
-			case '.':
+			case ',':
 #ifndef NO_JIT
 			
 #else
-				instruction = malloc(sizeof(struct libbrainfuck_Instruction));
-				instruction->id = LIBBRAINFUCK_INSTRUCTION_INPUT;
-				instruction->memory = &libbrainfuck_handle_input_instruction;
+				instruction = malloc(sizeof(struct BrainfuckInstruction));
+				instruction->id = BRAINFUCK_INSTRUCTION_INPUT;
+				instruction->memory = &brainfuck_handle_input;
 #endif
 				break;
 		}
@@ -315,6 +313,6 @@ struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_
 		head = node;
 	}
 	if (error != NULL)
-		*error = LIBBRAINFUCK_OK; 
+		*error = BRAINFUCK_OK; 
 	return script;
 }

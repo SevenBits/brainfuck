@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#if !defined(LIBBRAINFUCK_COMPAT_H) && defined(NO_JIT)
-#define LIBBRAINFUCK_COMPAT_H
+
+#if !defined(BRAINFUCK_COMPAT_H) && defined(NO_JIT)
+#define BRAINFUCK_COMPAT_H
 
 #include "instruction.h"
 #include "execution.h"
@@ -34,7 +35,7 @@
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_cell_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx);
+int brainfuck_handle_cell_mutatation(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx);
 
 /*
  * Handles index mutation if JIT is disabled.
@@ -43,7 +44,7 @@ int libbrainfuck_handle_cell_mutate_instruction(struct libbrainfuck_Instruction 
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_index_mutate_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx);
+int brainfuck_handle_index_mutation(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx);
 
 /*
  * Handles output if JIT is disabled.
@@ -52,6 +53,6 @@ int libbrainfuck_handle_index_mutate_instruction(struct libbrainfuck_Instruction
  * @param ctx The execution context to use.
  * @return The result. If lower than zero, it failed.
  */
-int libbrainfuck_handle_output_instruction(struct libbrainfuck_Instruction *instruction, struct libbrainfuck_ExecutionContext *ctx);
+int brainfuck_handle_output(struct BrainfuckInstruction *instruction, struct BrainfuckExecutionContext *ctx);
 
 #endif

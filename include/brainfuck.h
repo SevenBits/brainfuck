@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef LIBBRAINFUCK_BRAINFUCK_H
-#define LIBBRAINFUCK_BRAINFUCK_H
+#ifndef BRAINFUCK_BRAINFUCK_H
+#define BRAINFUCK_BRAINFUCK_H
 
 #include "base.h"
 
@@ -36,6 +36,6 @@
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct libbrainfuck_Script * libbrainfuck_brainfuck_compile(struct libbrainfuck_CompilerContext *ctx, char *source, int *error);
+struct BrainfuckScript * brainfuck_compile(struct BrainfuckCompilerContext *ctx, char *source, int *error);
 
 #endif
