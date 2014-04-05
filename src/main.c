@@ -28,8 +28,8 @@
 
 int main(void)
 {
-	struct libbrainfuck_Script *script = libbrainfuck_brainfuck_compile(NULL, "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.", NULL);
-	libbrainfuck_run(script, NULL);
-	libbrainfuck_free(script);
+	struct BrainfuckScript *script = brainfuck_compile(NULL, "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.", NULL);
+	brainfuck_run(NULL, script);
+	brainfuck_free(script);
 	return 0;
 }
