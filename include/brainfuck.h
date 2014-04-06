@@ -21,15 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef BRAINFUCK_BRAINFUCK_H
+#define BRAINFUCK_BRAINFUCK_H
 
-#include "../include/brainfuck.h"
+#include "base.h"
 
-int main(void)
-{
-	struct BrainfuckScript *script = brainfuck_compile(NULL, "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.", NULL);
-	brainfuck_run(NULL, script);
-	brainfuck_free(script);
-	return 0;
-}
+/* 
+ * Compile the list of tokens. using the default Brainfuck compiler.
+ *
+ * @param ctx The compiler context.
+ * @param source The source string to compile.
+ * @param error A pointer to an integer that will be set to either a 
+ * 	success or error code.
+ * @return A pointer to a BrainfuckScript instance or <code>null</code> if
+ * 	the compiling failed.
+ */
+struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error);
+
+#endif

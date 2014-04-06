@@ -34,6 +34,18 @@ struct BrainfuckList * brainfuck_list_new() {
 	return (struct BrainfuckList *) malloc(sizeof(BrainfuckList));
 }
 
+/* 
+ * Determines if the given list is empty.
+ *
+ * @param list The list to check.
+ * @return <code>true</code> if this list is empty, <code>false</code> otherwise.
+ */
+int brainfuck_list_empty(struct BrainfuckList *list)
+{
+	return list->root == NULL;
+}
+
+
 /*
  * Creates a new linked list node.
  *
@@ -60,14 +72,47 @@ struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list)
 }
 
 /*
+ * Returns the first node of a linked list.
+ *
+ * @param list The list to remove the first node of.
+ * @return The remove node.
+ */
+struct BrainfuckListNode * brainfuck_shift(struct BrainfuckList *list)
+{
+	struct BrainfuckListNode *node = list->root;
+	if (node == NULL)
+		return node;
+	list->root = node->next;
+	return node;
+}
+
+/*
  * Adds the given element to the end of the given list.
  *
  * @param list The list to add the node to.
  * @param element The element to add.
  */
-void brainfuck_list_add(struct BrainfuckList *list, void *element)
+void brainfuck_list_push(struct BrainfuckList *list, void *element)
 {
 	struct BrainfuckListNode *node = brainfuck_list_node_new();
+	struct BrainfuckListNode *head = brainfuck_list_last(list);
+
 	node->payload = element;
-	brainfuck_list_last(list)->next = node;
+	if (head == NULL)
+		list->root = node;
+	head->next = node;
+}
+
+/*
+ * Adds the given element to the front of the list.
+ *
+ * @param list The list to add the node to.
+ * @param element The element to add.
+ */
+void brainfuck_list_unshift(struct BrainfuckList *list, void *element)
+{
+	struct BrainfuckListNode *node = list->root;
+	list->root = brainfuck_list_node_new();
+	list->root->payload = element;
+	list->root->next = node;
 }

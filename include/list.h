@@ -25,7 +25,7 @@
 #define BRAINFUCK_LIST_H
 
 /* Linked list inteface */
-#define brainfuck_list_next(head) head = head->next;
+#define brainfuck_list_next(head) head = head->next
 
 /*
  * This structure represents a node of the linked list.
@@ -59,11 +59,50 @@ struct BrainfuckList {
 struct BrainfuckList * brainfuck_list_new();
 
 /*
+ * Creates a new linked list node.
+ *
+ * @return A new linked list node.
+ */
+struct BrainfuckListNode * brainfuck_list_node_new();
+
+/* 
+ * Determines if the given list is empty.
+ *
+ * @param list The list to check.
+ * @return <code>1</code> if this list is empty, <code>0</code> otherwise.
+ */
+int brainfuck_list_empty(struct BrainfuckList *list);
+
+/*
+ * Returns the last node of a linked list.
+ *
+ * @param list The list to get the last node of.
+ * @return The last node of a linked list.
+ */
+struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list);
+
+/*
+ * Removes the first node of a linked list.
+ *
+ * @param list The list to remove the first node of.
+ * @return The remove node.
+ */
+struct BrainfuckListNode * brainfuck_list_shift(struct BrainfuckList *list);
+
+/*
  * Adds the given element to the end of the given list.
  *
  * @param list The list to add the node to.
  * @param element The element to add.
  */
-void brainfuck_list_add(struct BrainfuckList *list, void *element);
+void brainfuck_list_push(struct BrainfuckList *list, void *element);
+
+/*
+ * Adds the given element to the front of the list.
+ *
+ * @param list The list to add the node to.
+ * @param element The element to add.
+ */
+void brainfuck_list_unshift(struct BrainfuckList *list, void *element);
 
 #endif
