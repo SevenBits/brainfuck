@@ -55,26 +55,26 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 			while (*source++ == '+' || *source == '-')
 				difference += (*source == '+' ? 1 : -1); 
 			source--;
-			instruction = brainfuck_helper_cell_mutation(difference);
+			instruction = brainfuck_helper_create_cell_mutation(difference);
 			break;
 		case '>':
 		case '<':
 			while (*source++ == '>' || *source == '<')
 				difference += (*source == '>' ? 1 : -1);
 			source--;
-			instruction = brainfuck_helper_index_mutation(difference);
+			instruction = brainfuck_helper_create_index_mutation(difference);
 			break;
 		case '.':
 			while (*source++ == '.')
 				difference++;
 			source--;
-			instruction = brainfuck_helper_output(difference);
+			instruction = brainfuck_helper_create_output(difference);
 			break;
 		case ',':
 			while (*source++ == ',')
 				difference++;
 			source--;
-			instruction = brainfuck_helper_input(difference);
+			instruction = brainfuck_helper_create_input(difference);
 			break;
 		case '[':
 			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
