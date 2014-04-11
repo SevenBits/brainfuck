@@ -26,23 +26,9 @@
 
 #define BRAINFUCK_INSTRUCTION_CELL 1 /* Cell value mutation */
 #define BRAINFUCK_INSTRUCTION_INDEX 2 /* Index mutation */
-#define BRAINFUCK_INSTRUCTION_OUTPUT 3
-#define BRAINFUCK_INSTRUCTION_INPUT 4
-#define BRAINFUCK_INSTRUCTION_LOOP 5
-
-#define BRAINFUCK_INSTRUCTION_SET_BRAINFUCK {
-	BRAINFUCK_INSTRUCTION_CELL, \
-	BRAINFUCK_INSTRUCTION_INDEX, \
-	BRAINFUCK_INSTRUCTION_OUTPUT, \
-	BRAINFUCK_INSTRUCTION_INPUT, \
-	BRAINFCUK_INSTRUCTION_LOOP \
-}
-
-/*
- * A BrainfuckInstructionSet is an integer (for now) and represents the 
- * 	instruction set that the compiler should use. 
- */
-typedef BrainfuckInstructionSet int[];
+#define BRAINFUCK_INSTRUCTION_OUTPUT 3 /* Write cell value to stdout */
+#define BRAINFUCK_INSTRUCTION_INPUT 4 /* Set cell value to stdin */
+#define BRAINFUCK_INSTRUCTION_LOOP 5 /* Loop */
 
 /*
  * This structure represents a single instruction.
@@ -53,28 +39,17 @@ struct BrainfuckInstruction {
 	 */
 	int id;
 
+	/*                                                                
+	 * Either the difference between the current value and the new value, or
+	 * the amount of times to execute this instruction.
+	 */
+	int difference;
+
 	/*
 	 * Contains the memory to execute.
 	 */
 	void *memory;
 } BrainfuckInstruction;
-
-/*                                                                              
- * This structure represents an instruction that mutates the index or the       
- *      value of a memory cell.                                                 
- */                                                                             
-struct BrainfuckMutateInstruction {                                     
-	/*                                                                   
-	 * The base instruction.                                                
-	 */                                                                     
-	struct BrainfuckInstruction base;                                       
-                                                                    
-	/*                                                                      
-	 * The difference between the current value and the new value.          
-	 * To decrease the value, use a negative difference number.            
-	 */                               
-	int difference;                                                         
-} BrainfuckMutateInstruction;  
 
 /*                                                                              
  * A loop instruction that contains a list of instructions to execute.                                   

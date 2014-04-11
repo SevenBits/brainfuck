@@ -46,16 +46,29 @@ struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContex
 	BRAINFUCK_DEFAULT_VALUE(ctx, NULL);
 	
 	while(*source) {
+		difference = 0;
 		switch(*source++) {
 		case '+':
 		case '-':
+			while (*source++ == '+' || *source == '-')
+				difference += (*source == '+' 1 : -1); 
+			source--;
 			break;
 		case '>':
 		case '<':
+			while (*source++ == '>' || *source == '<')
+				difference += (*source == '>' 1 : -1);
+			source--;
 			break;
 		case '.':
+			while (*source++ == '.')
+				difference++;
+			source--;
 			break;
 		case ',':
+			while (*source++ == ',')
+				difference++;
+			source--;
 			break;
 		case '[':
 			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
