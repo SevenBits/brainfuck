@@ -65,10 +65,11 @@ struct BrainfuckListNode * brainfuck_list_node_new()
 struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list)
 {
 	struct BrainfuckListNode *head = list->root;
-	
 	while (head != NULL)
-		brainfuck_list_iterate(head);
-	return head;
+		if (head->next == NULL)
+			return head;
+		brainfuck_list_next(head);
+	return NULL;
 }
 
 /*
@@ -77,7 +78,7 @@ struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list)
  * @param list The list to remove the first node of.
  * @return The remove node.
  */
-struct BrainfuckListNode * brainfuck_shift(struct BrainfuckList *list)
+struct BrainfuckListNode * brainfuck_list_shift(struct BrainfuckList *list)
 {
 	struct BrainfuckListNode *node = list->root;
 	if (node == NULL)

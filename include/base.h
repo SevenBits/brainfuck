@@ -25,6 +25,9 @@
 #define BRAINFUCK_BASE_H
 
 #define BRAINFUCK_DEFAULT_VALUE(variable, value) variable = variable == NULL ? value : variable
+#define BRAINFUCK_SET_ERROR(variable, value) if (variable != NULL) { \
+	*variable = value;  \
+} \
 
 #define BRAINFUCK_OK 1 /* Everything is OK */
 #define BRAINFUCK_EOF EOF /* End of file */
@@ -38,16 +41,10 @@
 #include "instruction.h"
 
 /*
- * This structure represents a script that is compiled by a compiler.
- */ 
-typedef BrainfuckScript BrainfuckLoopInstruction;
-
-/*
  * A BrainfuckCompilerContext structure is passed to the compiler and provides
  * 	the analystic and transform passes.
  */
 struct BrainfuckCompilerContext {
-	BrainfuckInstructionSet instruction_set;
 } BrainfuckCompilerContext;
 
 /*
@@ -100,7 +97,7 @@ struct BrainfuckExecutionContext * brainfuck_execution_context_default(int size)
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */
-int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx);
+int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecutionContext *ctx);
 
 /*
  * Deallocate the given Brainfuck structure from the memory.

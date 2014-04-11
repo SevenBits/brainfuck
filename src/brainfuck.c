@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdlib.h>
 
 #include "../include/brainfuck.h"
+#include "../include/helper.h"
 
 /* 
  * Compile the list of tokens. using the default Brainfuck compiler.
@@ -34,13 +36,13 @@
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error)
+struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error)
 {	
 	struct BrainfuckList *loops = brainfuck_list_new();
 	struct BrainfuckLoopInstruction *loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
-	struct BrainfuckScript *script = loop;
-	struct BrainfuckListNode *node;
-	struct BrainfuckInstruction *instruction;
+	struct BrainfuckLoopInstruction *script = loop;
+	struct BrainfuckListNode *node = NULL;
+	struct BrainfuckInstruction *instruction = NULL;
 	
 	int difference = 0;
 	BRAINFUCK_DEFAULT_VALUE(ctx, NULL);
@@ -51,30 +53,34 @@ struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContex
 		case '+':
 		case '-':
 			while (*source++ == '+' || *source == '-')
-				difference += (*source == '+' 1 : -1); 
+				difference += (*source == '+' ? 1 : -1); 
 			source--;
+			instruction = brainfuck_helper_cell_mutation(difference);
 			break;
 		case '>':
 		case '<':
 			while (*source++ == '>' || *source == '<')
-				difference += (*source == '>' 1 : -1);
+				difference += (*source == '>' ? 1 : -1);
 			source--;
+			instruction = brainfuck_helper_index_mutation(difference);
 			break;
 		case '.':
 			while (*source++ == '.')
 				difference++;
 			source--;
+			instruction = brainfuck_helper_output(difference);
 			break;
 		case ',':
 			while (*source++ == ',')
 				difference++;
 			source--;
+			instruction = brainfuck_helper_input(difference);
 			break;
 		case '[':
 			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
-			instruction = loop;
+			instruction = (struct BrainfuckInstruction *) loop;
 			node = brainfuck_list_node_new();
-			node->payload = instruction
+			node->payload = instruction;
 			brainfuck_list_unshift(loops, node);
 			node = NULL;
 			break;
@@ -91,7 +97,7 @@ struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContex
 		if (node == NULL) {
 			node = brainfuck_list_node_new();
 			node->payload = instruction;
-			BRAINFUCK_DEFAULT_VALUE(loop->node, node);
+			BRAINFUCK_DEFAULT_VALUE(loop->root, node);
 		} else {
 			node->next = brainfuck_list_node_new();
 			node->next->payload = instruction;
@@ -99,6 +105,6 @@ struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContex
 		}
 	}
 	
-	*error = BRAINFUCK_OK;
+	BRAINFUCK_SET_ERROR(error, BRAINFUCK_OK);
 	return script;
 }

@@ -63,7 +63,7 @@ struct BrainfuckLoopInstruction {
 	/*                                                                      
 	 * The node that contains the first instruction to execute.   
 	 */                                                                     
-	struct BrainfuckListNode *node;                                               
+	struct BrainfuckListNode *root;                                               
 } BrainfuckLoopInstruction; 
 
 #endif

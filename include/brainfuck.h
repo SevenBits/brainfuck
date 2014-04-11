@@ -36,6 +36,6 @@
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error);
+struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error);
 
 #endif

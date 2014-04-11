@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "../include/base.h"
 
@@ -52,16 +54,18 @@ struct BrainfuckExecutionContext * brainfuck_execution_context_default(int size)
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */                                                                         
-int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx)
+int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecutionContext *ctx)
 {
 	BRAINFUCK_DEFAULT_VALUE(ctx, brainfuck_execution_context_default(BRAINFUCK_MEMORY_SIZE_DEFAULT));
 
-	struct BrainfuckScriptNode *head = script->root;
+	struct BrainfuckListNode *head = script->root;
+	struct BrainfuckInstruction *instruction = NULL;
 	while (head != NULL) {
-		if (head->instruction->memory == NULL)
+		instruction = head->payload;
+		if (instruction->memory == NULL)
 			continue;
 		
-		int (*func)(struct BrainfuckExecutionContext *ctx)  = head->instruction->memory;
+		int (*func)(struct BrainfuckExecutionContext *ctx)  = instruction->memory;
 		int result = func(ctx);
 		if (result < BRAINFUCK_OK)
 			return result;
