@@ -62,11 +62,12 @@ int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecu
 	struct BrainfuckInstruction *instruction = NULL;
 	while (head != NULL) {
 		instruction = head->payload;
-		if (instruction->memory == NULL)
+		if (instruction == NULL || instruction->memory == NULL) {
+			brainfuck_list_next(head);
 			continue;
+		}
 		if (instruction->id == BRAINFUCK_INSTRUCTION_LOOP && (error = brainfuck_run(((struct BrainfuckLoopInstruction *) instruction), ctx)) != BRAINFUCK_OK)
 			return error;
-			
 		int (*func)(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction)  = instruction->memory;
 		int result = func(ctx, instruction);
 		if (result < BRAINFUCK_OK)

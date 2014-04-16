@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdio.h>
 #include <stdlib.h>
  
 #include "../include/helper.h"
@@ -35,6 +36,7 @@
 struct BrainfuckInstruction * brainfuck_helper_create_cell_mutation(int difference)
 {
 	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) malloc(sizeof(BrainfuckInstruction));
+	instruction->id = BRAINFUCK_INSTRUCTION_CELL;
 	instruction->difference = difference;
 	instruction->memory = &brainfuck_helper_handle_cell_mutation;
 	return instruction;
@@ -65,6 +67,7 @@ int brainfuck_helper_handle_cell_mutation(struct BrainfuckExecutionContext *ctx,
 struct BrainfuckInstruction * brainfuck_helper_create_index_mutation(int difference)
 {
 	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) malloc(sizeof(BrainfuckInstruction));
+	instruction->id = BRAINFUCK_INSTRUCTION_INDEX;
 	instruction->difference = difference;
 	instruction->memory = &brainfuck_helper_handle_index_mutation;
 	return instruction;
@@ -94,6 +97,7 @@ int brainfuck_helper_handle_index_mutation(struct BrainfuckExecutionContext *ctx
 struct BrainfuckInstruction * brainfuck_helper_create_output(int times)
 {
 	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) malloc(sizeof(BrainfuckInstruction));
+	instruction->id = BRAINFUCK_INSTRUCTION_OUTPUT;
 	instruction->difference = times;
 	instruction->memory = &brainfuck_helper_handle_output;
 	return instruction;
@@ -110,6 +114,7 @@ struct BrainfuckInstruction * brainfuck_helper_create_output(int times)
  */
 int brainfuck_helper_handle_output(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction)
 {
+	printf("[%i] = %i = '%c'", ctx->index, ctx->memory[ctx->index], ctx->memory[ctx->index]);
 	int index = 0;
 	for (index = 0; index < instruction->difference; index++)
 		ctx->output_handler(ctx->memory[ctx->index]);
@@ -125,6 +130,7 @@ int brainfuck_helper_handle_output(struct BrainfuckExecutionContext *ctx, struct
 struct BrainfuckInstruction * brainfuck_helper_create_input(int times)
 {
 	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) malloc(sizeof(BrainfuckInstruction));
+	instruction->id = BRAINFUCK_INSTRUCTION_INPUT;
 	instruction->difference = times;
 	instruction->memory = &brainfuck_helper_handle_input;
 	return instruction;

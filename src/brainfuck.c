@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "../include/brainfuck.h"
 #include "../include/helper.h"
@@ -42,13 +43,14 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 	struct BrainfuckLoopInstruction *loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
 	struct BrainfuckLoopInstruction *script = loop;
 	struct BrainfuckListNode *node = NULL;
-	struct BrainfuckInstruction *instruction = NULL;
-	
+	struct BrainfuckInstruction *instruction = NULL;	
 	int difference = 0;
+
 	BRAINFUCK_DEFAULT_VALUE(ctx, NULL);
-	
+	((struct BrainfuckInstruction *) loop)->id = BRAINFUCK_INSTRUCTION_LOOP;
+
 	while(*source) {
-		difference = 0;
+		difference = 1;
 		switch(*source++) {
 		case '+':
 		case '-':
@@ -77,23 +79,36 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 			instruction = brainfuck_helper_create_input(difference);
 			break;
 		case '[':
+			/* tricky stuff here TODO add comments */
+			node->next = loop->root;
+			loop->root = node;
+			node = brainfuck_list_node_new();
+			node->payload = loop;
+			/* end tricky stuff */
+			brainfuck_list_unshift(loops, node);
+
 			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
 			instruction = (struct BrainfuckInstruction *) loop;
-			node = brainfuck_list_node_new();
-			node->payload = instruction;
-			brainfuck_list_unshift(loops, node);
+			instruction->id = BRAINFUCK_INSTRUCTION_LOOP;
+
 			node = NULL;
-			break;
+			continue;
 		case ']':
 			if (brainfuck_list_empty(loops)) {
 				*error = BRAINFUCK_ESYNTAX;
 				return NULL;
 			}
-			node = brainfuck_list_shift(loops);
+			instruction = (struct BrainfuckInstruction *) loop;
+
+			/* tricky stuff again */
+			loop = brainfuck_list_shift(loops)->payload;
+			node = loop->root;
+			loop->root = node->next;
+			node->next = NULL;
 			break;
 		}
 		if (instruction == NULL)
-			continue;
+			continue;;
 		if (node == NULL) {
 			node = brainfuck_list_node_new();
 			node->payload = instruction;
@@ -104,7 +119,6 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 			node = node->next;
 		}
 	}
-	
 	BRAINFUCK_SET_ERROR(error, BRAINFUCK_OK);
 	return script;
 }

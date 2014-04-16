@@ -90,19 +90,19 @@ struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list);
 struct BrainfuckListNode * brainfuck_list_shift(struct BrainfuckList *list);
 
 /*
- * Adds the given element to the end of the given list.
+ * Adds the given node to the end of the given list.
  *
  * @param list The list to add the node to.
- * @param element The element to add.
+ * @param node The node to add.
  */
-void brainfuck_list_push(struct BrainfuckList *list, void *element);
+void brainfuck_list_push(struct BrainfuckList *list, struct BrainfuckListNode *node);
 
 /*
- * Adds the given element to the front of the list.
+ * Adds the given node to the front of the list.
  *
  * @param list The list to add the node to.
- * @param element The element to add.
+ * @param node The node to add to the front of the list.
  */
-void brainfuck_list_unshift(struct BrainfuckList *list, void *element);
+void brainfuck_list_unshift(struct BrainfuckList *list, struct BrainfuckListNode *node);
 
 #endif
