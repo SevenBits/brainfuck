@@ -73,10 +73,10 @@ struct BrainfuckListNode * brainfuck_list_last(struct BrainfuckList *list)
 }
 
 /*
- * Returns the first node of a linked list.
+ * Removes the first node of a linked list.
  *
  * @param list The list to remove the first node of.
- * @return The remove node.
+ * @return The removed node.
  */
 struct BrainfuckListNode * brainfuck_list_shift(struct BrainfuckList *list)
 {
@@ -88,32 +88,28 @@ struct BrainfuckListNode * brainfuck_list_shift(struct BrainfuckList *list)
 }
 
 /*
- * Adds the given element to the end of the given list.
+ * Adds the given node to the end of the given list.
  *
  * @param list The list to add the node to.
- * @param element The element to add.
+ * @param node The node to add.
  */
-void brainfuck_list_push(struct BrainfuckList *list, void *element)
+void brainfuck_list_push(struct BrainfuckList *list, struct BrainfuckListNode *node)
 {
-	struct BrainfuckListNode *node = brainfuck_list_node_new();
 	struct BrainfuckListNode *head = brainfuck_list_last(list);
-
-	node->payload = element;
 	if (head == NULL)
 		list->root = node;
 	head->next = node;
 }
 
 /*
- * Adds the given element to the front of the list.
+ * Adds the given node to the front of the list.
  *
  * @param list The list to add the node to.
- * @param element The element to add.
+ * @param node The node to add to the front of the list.
  */
-void brainfuck_list_unshift(struct BrainfuckList *list, void *element)
+void brainfuck_list_unshift(struct BrainfuckList *list, struct BrainfuckListNode *node)
 {
-	struct BrainfuckListNode *node = list->root;
-	list->root = brainfuck_list_node_new();
-	list->root->payload = element;
-	list->root->next = node;
+	struct BrainfuckListNode *original_root = list->root;
+	list->root = node;
+	list->root->next = original_root;
 }
