@@ -48,6 +48,22 @@ struct BrainfuckCompilerContext {
 } BrainfuckCompilerContext;
 
 /*
+ * Structure used by compiler to save the state of a loop.
+ */
+struct BrainfuckLoopState {
+	/*
+	 * The loop we are talking about.
+	 */
+	struct BrainfuckLoopInstruction *loop;
+
+	/*
+	 * The node to which we add this instruction to after
+	 * the closing bracket occurs.
+	 */
+	struct BrainfuckListNode *node;
+} BrainfuckLoopState;
+
+/*
  * A BrainfuckExecutionContext structure is passed to the execution engine and
  * 	provides the stdin, stdout and the memory management.
  */

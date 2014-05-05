@@ -43,11 +43,10 @@ struct BrainfuckInstruction * brainfuck_helper_create_cell_mutation(int differen
 }
 
 /*
- * Handles the cell value mutation for platforms where JIT isn't available.
+ * Handles the cell value mutation on platforms where JIT isn't available.
  *
  * @param ctx The execution context that will provide the memory management and
- *	the environment for the execution. If <code>NULL</code> is given, it will
- *	use the default context.
+ *	the environment for the execution.
  * @param instruction The instruction that is executed.
  * @return <code>BRAINFUCK_OK</code> if no errors occured.
  */
@@ -74,11 +73,10 @@ struct BrainfuckInstruction * brainfuck_helper_create_index_mutation(int differe
 }
 
 /*
- * Handles the index mutation for platforms where JIT isn't available.
+ * Handles the index mutation on platforms where JIT isn't available.
  *
  * @param ctx The execution context that will provide the memory management and
- *	the environment for the execution. If <code>NULL</code> is given, it will
- *	use the default context.
+ *	the environment for the execution.
  * @param instruction The instruction that is executed.
  * @return <code>BRAINFUCK_OK</code> if no errors occured.
  */
@@ -104,11 +102,10 @@ struct BrainfuckInstruction * brainfuck_helper_create_output(int times)
 }
 
 /*
- * Handles the output for platforms where JIT isn't available.
+ * Handles the output on platforms where JIT isn't available.
  *
  * @param ctx The execution context that will provide the memory management and
- *	the environment for the execution. If <code>NULL</code> is given, it will
- *	use the default context.
+ *	the environment for the execution.
  * @param instruction The instruction that is executed.
  * @return <code>BRAINFUCK_OK</code> if no errors occured.
  */
@@ -137,11 +134,10 @@ struct BrainfuckInstruction * brainfuck_helper_create_input(int times)
 }
 
 /*
- * Handles the input for platforms where JIT isn't available.
+ * Handles the input on platforms where JIT isn't available.
  *
  * @param ctx The execution context that will provide the memory management and
- *	the environment for the execution. If <code>NULL</code> is given, it will
- *	use the default context.
+ *	the environment for the execution.
  * @param instruction The instruction that is executed.
  * @return <code>BRAINFUCK_OK</code> if no errors occured.
  */
@@ -150,5 +146,25 @@ int brainfuck_helper_handle_input(struct BrainfuckExecutionContext *ctx, struct 
 	int index = 0;
 	for (index = 0; index < instruction->difference; index++)
 		ctx->memory[ctx->index] = ctx->input_handler();
+	return BRAINFUCK_OK;
+}
+
+/*
+ * Handles the given loop instruction on platforms where JIT isn't available.
+ *
+ * @param ctx The execution context that will provide the memory management and 
+ * 	the environment for the execution.
+ * @param instruction The instruction that is executed.
+ * @reutrn <code>BRAINFUCK_OK</code> if no errors occured.
+ */
+int brainfuck_helper_handle_loop(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction)
+{;
+	/*struct BrainfuckLoopInstruction *loop = (struct BrainfuckLoopInstruction *) instruction;*/
+	brainfuck_run((struct BrainfuckLoopInstruction *) instruction, NULL);
+	/*int error = BRAINFUCK_OK;
+	while(ctx->memory[ctx->index]) {
+		if ((error = brainfuck_run(loop, ctx)) != BRAINFUCK_OK)
+			return error;
+	}*/
 	return BRAINFUCK_OK;
 }

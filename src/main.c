@@ -29,7 +29,7 @@
 int main(void)
 {
 	/*struct BrainfuckLoopInstruction *script = brainfuck_compile_string(NULL, "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.", NULL);*/
-	struct BrainfuckLoopInstruction *script = brainfuck_compile_string(NULL, "+++++++><<<.", NULL);
+	struct BrainfuckLoopInstruction *script = brainfuck_compile_string(NULL, "+++++++++++++++++++++++++++>+[<+>-].", NULL);
 	brainfuck_run(script, NULL);
 	brainfuck_free(script);
 	return 0;

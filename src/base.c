@@ -57,7 +57,6 @@ struct BrainfuckExecutionContext * brainfuck_execution_context_default(int size)
 int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecutionContext *ctx)
 {
 	BRAINFUCK_DEFAULT_VALUE(ctx, brainfuck_execution_context_default(BRAINFUCK_MEMORY_SIZE_DEFAULT));
-	int error = BRAINFUCK_OK;
 	struct BrainfuckListNode *head = script->root;
 	struct BrainfuckInstruction *instruction = NULL;
 	while (head != NULL) {
@@ -66,8 +65,6 @@ int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecu
 			brainfuck_list_next(head);
 			continue;
 		}
-		if (instruction->id == BRAINFUCK_INSTRUCTION_LOOP && (error = brainfuck_run(((struct BrainfuckLoopInstruction *) instruction), ctx)) != BRAINFUCK_OK)
-			return error;
 		int (*func)(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction)  = instruction->memory;
 		int result = func(ctx, instruction);
 		if (result < BRAINFUCK_OK)

@@ -41,74 +41,81 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 {	
 	struct BrainfuckList *loops = brainfuck_list_new();
 	struct BrainfuckLoopInstruction *loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
+	struct BrainfuckLoopState *loop_state = NULL;
 	struct BrainfuckLoopInstruction *script = loop;
 	struct BrainfuckListNode *node = NULL;
-	struct BrainfuckInstruction *instruction = NULL;	
+	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) loop;	
 	int difference = 0;
 
 	BRAINFUCK_DEFAULT_VALUE(ctx, NULL);
-	((struct BrainfuckInstruction *) loop)->id = BRAINFUCK_INSTRUCTION_LOOP;
+	instruction->id = BRAINFUCK_INSTRUCTION_LOOP;
+	instruction->memory = &brainfuck_helper_handle_loop;
+	instruction = NULL;
 
 	while(*source) {
+		printf("source: %c\n", *source);
 		difference = 1;
-		switch(*source++) {
+		switch(*source) {
 		case '+':
 		case '-':
-			while (*source++ == '+' || *source == '-')
-				difference += (*source == '+' ? 1 : -1); 
+			while (*(++source) == '+' || *source == '-')
+				difference += (*source == '+' ? 1 : -1);
 			source--;
 			instruction = brainfuck_helper_create_cell_mutation(difference);
 			break;
 		case '>':
 		case '<':
-			while (*source++ == '>' || *source == '<')
+			while (*(++source) == '>' || *source == '<')
 				difference += (*source == '>' ? 1 : -1);
 			source--;
 			instruction = brainfuck_helper_create_index_mutation(difference);
 			break;
 		case '.':
-			while (*source++ == '.')
+			while (*(++source) == '.')
 				difference++;
 			source--;
 			instruction = brainfuck_helper_create_output(difference);
 			break;
 		case ',':
-			while (*source++ == ',')
+			while (*(++source) == ',')
 				difference++;
 			source--;
 			instruction = brainfuck_helper_create_input(difference);
 			break;
 		case '[':
 			/* tricky stuff here TODO add comments */
-			node->next = loop->root;
-			loop->root = node;
+			loop_state = (struct BrainfuckLoopState *) malloc(sizeof(BrainfuckLoopState));
+			loop_state->loop = loop;
+			loop_state->node = node;
 			node = brainfuck_list_node_new();
-			node->payload = loop;
+			node->payload = loop_state;
 			/* end tricky stuff */
 			brainfuck_list_unshift(loops, node);
 
 			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
 			instruction = (struct BrainfuckInstruction *) loop;
 			instruction->id = BRAINFUCK_INSTRUCTION_LOOP;
+			instruction->memory = &brainfuck_helper_handle_loop;
 
 			node = NULL;
+			source++;
 			continue;
 		case ']':
 			if (brainfuck_list_empty(loops)) {
 				*error = BRAINFUCK_ESYNTAX;
 				return NULL;
 			}
-			instruction = (struct BrainfuckInstruction *) loop;
 
 			/* tricky stuff again */
-			loop = brainfuck_list_shift(loops)->payload;
-			node = loop->root;
-			loop->root = node->next;
-			node->next = NULL;
+			loop_state = brainfuck_list_shift(loops)->payload;
+			loop = loop_state->loop;
+			node = loop_state->node;
+			instruction = (struct BrainfuckInstruction *) loop;
+			/* end tricky stuff */
 			break;
 		}
 		if (instruction == NULL)
-			continue;;
+			continue;
 		if (node == NULL) {
 			node = brainfuck_list_node_new();
 			node->payload = instruction;
@@ -118,6 +125,7 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 			node->next->payload = instruction;
 			node = node->next;
 		}
+		source++;
 	}
 	BRAINFUCK_SET_ERROR(error, BRAINFUCK_OK);
 	return script;
