@@ -40,28 +40,14 @@
 #include "list.h"
 #include "instruction.h"
 
+#define BrainfuckScript BrainfuckListNode
+
 /*
  * A BrainfuckCompilerContext structure is passed to the compiler and provides
  * 	the analystic and transform passes.
  */
 struct BrainfuckCompilerContext {
 } BrainfuckCompilerContext;
-
-/*
- * Structure used by compiler to save the state of a loop.
- */
-struct BrainfuckLoopState {
-	/*
-	 * The loop we are talking about.
-	 */
-	struct BrainfuckLoopInstruction *loop;
-
-	/*
-	 * The node to which we add this instruction to after
-	 * the closing bracket occurs.
-	 */
-	struct BrainfuckListNode *node;
-} BrainfuckLoopState;
 
 /*
  * A BrainfuckExecutionContext structure is passed to the execution engine and
@@ -113,7 +99,7 @@ struct BrainfuckExecutionContext * brainfuck_execution_context_default(int size)
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */
-int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecutionContext *ctx);
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx);
 
 /*
  * Deallocate the given Brainfuck structure from the memory.

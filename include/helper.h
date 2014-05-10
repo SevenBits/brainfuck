@@ -101,15 +101,4 @@ struct BrainfuckInstruction * brainfuck_helper_create_input(int times);
  */
 int brainfuck_helper_handle_input(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction);
 
-
-/*                                                                              
- * Handles the given loop instruction on platforms where JIT isn't available.   
- *                                                                              
- * @param ctx The execution context that will provide the memory management and 
- *      the environment for the execution.                                      
- * @param instruction The instruction that is executed.                         
- * @reutrn <code>BRAINFUCK_OK</code> if no errors occured.                      
- */                                                                             
-int brainfuck_helper_handle_loop(struct BrainfuckExecutionContext *ctx, struct BrainfuckInstruction *instruction);
-
 #endif

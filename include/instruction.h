@@ -28,7 +28,8 @@
 #define BRAINFUCK_INSTRUCTION_INDEX 2 /* Index mutation */
 #define BRAINFUCK_INSTRUCTION_OUTPUT 3 /* Write cell value to stdout */
 #define BRAINFUCK_INSTRUCTION_INPUT 4 /* Set cell value to stdin */
-#define BRAINFUCK_INSTRUCTION_LOOP 5 /* Loop */
+#define BRAINFUCK_FLAG_LOOP_START 1 << 0 /* Loop start */
+#define BRAINFUCK_FLAG_LOOP_END 1 << 1 /* Loop end */
 
 /*
  * This structure represents a single instruction.
@@ -46,24 +47,13 @@ struct BrainfuckInstruction {
 	int difference;
 
 	/*
+	 * The flags of this instruction.
+	 */
+	int flags;
+
+	/*
 	 * Contains the memory to execute.
 	 */
 	void *memory;
 } BrainfuckInstruction;
-
-/*                                                                              
- * A loop instruction that contains a list of instructions to execute.                                   
- */                                                                             
-struct BrainfuckLoopInstruction {                                     
-	/*                                                                   
-	 * The base instruction.                                                
-	 */                                                                     
-	struct BrainfuckInstruction base;                                       
-                                                                    
-	/*                                                                      
-	 * The node that contains the first instruction to execute.   
-	 */                                                                     
-	struct BrainfuckListNode *root;                                               
-} BrainfuckLoopInstruction; 
-
 #endif

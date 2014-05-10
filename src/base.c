@@ -54,10 +54,10 @@ struct BrainfuckExecutionContext * brainfuck_execution_context_default(int size)
  * @return a integer with a value of zero or higher if the script executed 
  *	successfully, a value lower than zero otherwise.
  */                                                                         
-int brainfuck_run(struct BrainfuckLoopInstruction *script, struct BrainfuckExecutionContext *ctx)
+int brainfuck_run(struct BrainfuckScript *script, struct BrainfuckExecutionContext *ctx)
 {
 	BRAINFUCK_DEFAULT_VALUE(ctx, brainfuck_execution_context_default(BRAINFUCK_MEMORY_SIZE_DEFAULT));
-	struct BrainfuckListNode *head = script->root;
+	struct BrainfuckListNode *head = script;
 	struct BrainfuckInstruction *instruction = NULL;
 	while (head != NULL) {
 		instruction = head->payload;

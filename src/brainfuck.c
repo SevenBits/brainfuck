@@ -37,23 +37,18 @@
  * @return A pointer to a BrainfuckScript instance or <code>null</code> if
  * 	the compiling failed.
  */
-struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error)
-{	
-	struct BrainfuckList *loops = brainfuck_list_new();
-	struct BrainfuckLoopInstruction *loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
-	struct BrainfuckLoopState *loop_state = NULL;
-	struct BrainfuckLoopInstruction *script = loop;
+struct BrainfuckScript * brainfuck_compile_string(struct BrainfuckCompilerContext *ctx, char *source, int *error)
+{
+	struct BrainfuckScript *script = NULL;
 	struct BrainfuckListNode *node = NULL;
-	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) loop;	
+	struct BrainfuckInstruction *instruction = (struct BrainfuckInstruction *) malloc(sizeof(BrainfuckInstruction));
+
+	int level = 0;
 	int difference = 0;
 
-	BRAINFUCK_DEFAULT_VALUE(ctx, NULL);
-	instruction->id = BRAINFUCK_INSTRUCTION_LOOP;
-	instruction->memory = &brainfuck_helper_handle_loop;
-	instruction = NULL;
+	BRAINFUCK_DEFAULT_VALUE(ctx, NULL); /* useless code used to ignore the unused field error */
 
 	while(*source) {
-		printf("source: %c\n", *source);
 		difference = 1;
 		switch(*source) {
 		case '+':
@@ -82,49 +77,21 @@ struct BrainfuckLoopInstruction * brainfuck_compile_string(struct BrainfuckCompi
 			source--;
 			instruction = brainfuck_helper_create_input(difference);
 			break;
-		case '[':
-			/* tricky stuff here TODO add comments */
-			loop_state = (struct BrainfuckLoopState *) malloc(sizeof(BrainfuckLoopState));
-			loop_state->loop = loop;
-			loop_state->node = node;
-			node = brainfuck_list_node_new();
-			node->payload = loop_state;
-			/* end tricky stuff */
-			brainfuck_list_unshift(loops, node);
-
-			loop = (struct BrainfuckLoopInstruction *) malloc(sizeof(BrainfuckLoopInstruction));
-			instruction = (struct BrainfuckInstruction *) loop;
-			instruction->id = BRAINFUCK_INSTRUCTION_LOOP;
-			instruction->memory = &brainfuck_helper_handle_loop;
-
-			node = NULL;
-			source++;
-			continue;
+		case '[':	
+			level++;
+			break;
 		case ']':
-			if (brainfuck_list_empty(loops)) {
+			if (level <= 0) {
 				*error = BRAINFUCK_ESYNTAX;
 				return NULL;
 			}
-
-			/* tricky stuff again */
-			loop_state = brainfuck_list_shift(loops)->payload;
-			loop = loop_state->loop;
-			node = loop_state->node;
-			instruction = (struct BrainfuckInstruction *) loop;
-			/* end tricky stuff */
 			break;
 		}
 		if (instruction == NULL)
 			continue;
-		if (node == NULL) {
-			node = brainfuck_list_node_new();
-			node->payload = instruction;
-			BRAINFUCK_DEFAULT_VALUE(loop->root, node);
-		} else {
-			node->next = brainfuck_list_node_new();
-			node->next->payload = instruction;
-			node = node->next;
-		}
+		node = brainfuck_list_node_new();
+		node->payload = instruction;
+		BRAINFUCK_DEFAULT_VALUE(script, node);
 		source++;
 	}
 	BRAINFUCK_SET_ERROR(error, BRAINFUCK_OK);
